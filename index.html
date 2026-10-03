@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Nahur & Eimy — Para Siempre</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Dancing+Script:wght@400;700&family=Cinzel:wght@400;700;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;overflow:hidden}
+body{font-family:'Cormorant Garamond',serif;overflow:hidden;width:100vw;height:100vh;height:100dvh;background:#0a0000;color:#2c1810;-webkit-tap-highlight-color:transparent;user-select:none}
+
+:root{
+  --gold:#c9a96e;--gold-light:#e8d5a3;--gold-dark:#8b7340;
+  --burgundy:#6b0020;--burgundy-deep:#3a0012;
+  --cream:#f4e4c1;--ink:#1a0a05;--parchment:#f5edd5;
+  --rose:#c4566a;--rose-soft:#e8a0b0;--white:#fffef8;
+}
+
+.screen{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity 1.2s ease,visibility 0s 1.2s;z-index:1;overflow:hidden}
+.screen.active{opacity:1;visibility:visible;transition:opacity 1.2s ease,visibility 0s 0s;z-index:10}
+#particles-canvas{position:fixed;inset:0;pointer-events:none;z-index:100}
+
+.progress-bar{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:200;opacity:0;transition:opacity .6s}
+.progress-bar.visible{opacity:1}
+.progress-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.2);transition:all .4s}
+.progress-dot.active{background:var(--gold);box-shadow:0 0 8px var(--gold);transform:scale(1.4)}
+.progress-dot.done{background:rgba(201,169,110,.45)}
+
+/* BUTTONS */
+.btn{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;padding:13px 36px;border:2px solid var(--gold);background:transparent;color:var(--gold);cursor:pointer;position:relative;overflow:hidden;transition:all .4s}
+.btn::before{content:'';position:absolute;inset:0;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform .4s;z-index:-1}
+.btn:hover::before,.btn:active::before{transform:scaleX(1)}
+.btn:hover,.btn:active{color:var(--ink)}
+.btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold-light),var(--gold));color:var(--ink);border:none;box-shadow:0 4px 20px rgba(201,169,110,.4)}
+.btn-gold::before{display:none}
+.btn-gold:hover{box-shadow:0 6px 30px rgba(201,169,110,.6);transform:translateY(-2px)}
+.btn-accept{font-family:'Great Vibes',cursive;font-size:1.8rem;padding:18px 60px;background:linear-gradient(135deg,var(--gold-dark),var(--gold),var(--gold-light));color:var(--ink);border:none;border-radius:50px;box-shadow:0 0 40px rgba(201,169,110,.5);animation:pulseG 2s ease-in-out infinite;text-transform:none;letter-spacing:1px}
+@keyframes pulseG{0%,100%{box-shadow:0 0 40px rgba(201,169,110,.5)}50%{box-shadow:0 0 60px rgba(201,169,110,.8),0 0 120px rgba(201,169,110,.3)}}
+.btn-small{font-family:'Cormorant Garamond',serif;font-size:.75rem;letter-spacing:2px;text-transform:uppercase;padding:6px 16px;border:1px solid var(--gold);background:transparent;color:var(--gold-dark);cursor:pointer;transition:all .3s}
+.btn-small:hover{background:var(--gold);color:var(--ink)}
+.btn-download{font-family:'Cormorant Garamond',serif;font-size:.85rem;letter-spacing:2px;text-transform:uppercase;padding:10px 25px;border:1px solid rgba(201,169,110,.5);background:rgba(201,169,110,.08);color:var(--gold);cursor:pointer;transition:all .4s;display:inline-flex;align-items:center;gap:8px}
+.btn-download:hover{background:var(--gold);color:var(--ink)}
+
+@keyframes fadeInUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes breathe{0%,100%{opacity:.5}50%{opacity:1}}
+
+/* ══════════ S0: INICIO ══════════ */
+#screen-inicio{background:radial-gradient(ellipse at center,#1a0510,#0a0005 60%,#000)}
+.inicio-content{text-align:center}
+.inicio-monogram{font-family:'Great Vibes',cursive;font-size:clamp(3rem,10vw,6rem);color:var(--gold);text-shadow:0 0 30px rgba(201,169,110,.5);opacity:0;animation:fadeInUp 2s .5s forwards}
+.inicio-amp{font-family:'Playfair Display',serif;font-size:clamp(1.5rem,4vw,2.5rem);color:var(--gold-dark);display:block;margin:-10px 0}
+.inicio-sub{font-family:'Cormorant Garamond',serif;font-size:clamp(.85rem,2.4vw,1.2rem);color:var(--gold-dark);letter-spacing:6px;text-transform:uppercase;margin-top:28px;opacity:0;animation:fadeIn 2s 1.5s forwards}
+.inicio-tap{font-size:.85rem;color:rgba(201,169,110,.4);letter-spacing:4px;text-transform:uppercase;margin-top:55px;opacity:0;animation:fadeIn 1.5s 3s forwards,breathe 3s 4.5s ease-in-out infinite}
+
+/* ══════════ S1: SOBRE ══════════ */
+#screen-sobre{background:radial-gradient(ellipse at 50% 40%,#2a1520,#120810 50%,#050005)}
+.envelope-container{perspective:1200px;width:clamp(260px,70vw,340px);height:clamp(180px,50vw,240px);cursor:pointer}
+.envelope{position:relative;width:100%;height:100%;transform-style:preserve-3d}
+.envelope-body{position:absolute;inset:0;background:linear-gradient(160deg,#f5e6d0,#e8d4b8,#d4c0a0);border-radius:4px;box-shadow:0 10px 40px rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.envelope-body::before{content:'';position:absolute;inset:8px;border:1px solid rgba(201,169,110,.3);border-radius:2px}
+.envelope-flap{position:absolute;top:0;left:0;right:0;height:55%;background:linear-gradient(170deg,#e8d4b8,#d4c0a0);clip-path:polygon(0 0,50% 70%,100% 0);transform-origin:top center;transition:transform 1.2s cubic-bezier(.4,0,.2,1);z-index:2;box-shadow:0 2px 10px rgba(0,0,0,.2)}
+.envelope.open .envelope-flap{transform:rotateX(180deg)}
+.wax-seal{width:60px;height:60px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#c0392b,#8b1a1a,#5a0f0f);box-shadow:0 3px 15px rgba(0,0,0,.5),inset 0 -2px 4px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;z-index:3;transition:all .8s}
+.envelope.open .wax-seal{opacity:0;transform:scale(0) rotate(180deg)}
+.wax-seal-text{font-family:'Great Vibes',cursive;font-size:1rem;color:rgba(255,220,200,.8);text-shadow:0 1px 2px rgba(0,0,0,.5)}
+.envelope-letter{position:absolute;width:85%;height:80%;background:var(--white);border-radius:2px;transform:translateY(0);transition:transform 1.2s .6s cubic-bezier(.4,0,.2,1);display:flex;align-items:center;justify-content:center;font-family:'Great Vibes',cursive;font-size:1.1rem;color:var(--gold-dark);text-align:center;padding:15px;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.envelope.open .envelope-letter{transform:translateY(-120%)}
+.sobre-hint{font-family:'Cormorant Garamond',serif;color:rgba(201,169,110,.4);font-size:.8rem;letter-spacing:3px;text-transform:uppercase;margin-top:28px;animation:breathe 2.5s ease-in-out infinite}
+.envelope.open~.sobre-hint{opacity:0;transition:opacity .4s}
+
+/* ══════════ S2: CARTA ══════════ */
+#screen-carta{background:linear-gradient(135deg,#1a0f0a,#2a1a12 50%,#1a0f08);padding:30px 15px}
+.carta-paper{background:linear-gradient(180deg,var(--parchment),#efe5cd);max-width:500px;width:92%;padding:clamp(22px,4vw,40px);border-radius:3px;box-shadow:0 15px 50px rgba(0,0,0,.5);position:relative;max-height:75vh;overflow-y:auto;-webkit-overflow-scrolling:touch;touch-action:pan-y}
+.carta-paper::before{content:'';position:absolute;top:12px;left:12px;right:12px;bottom:12px;border:1px solid rgba(201,169,110,.25);pointer-events:none}
+.carta-saludo{font-family:'Great Vibes',cursive;font-size:clamp(1.5rem,5vw,2.2rem);color:var(--burgundy);margin-bottom:18px}
+.carta-texto{font-family:'Cormorant Garamond',serif;font-size:clamp(.95rem,2.6vw,1.1rem);line-height:1.9;color:#3a2a1a}
+.carta-texto .line{display:block;opacity:0;transform:translateY(8px)}
+.carta-texto .line.visible{animation:lineIn .8s forwards}
+@keyframes lineIn{to{opacity:1;transform:translateY(0)}}
+.carta-firma{font-family:'Great Vibes',cursive;font-size:1.4rem;color:var(--burgundy);text-align:right;margin-top:22px;opacity:0}
+.carta-firma.visible{animation:fadeIn 1.5s forwards}
+.carta-continuar{margin-top:22px;text-align:center;opacity:0}
+.carta-continuar.visible{animation:fadeInUp 1s forwards}
+
+/* ══════════ S3: HISTORIA ══════════ */
+#screen-historia{background:linear-gradient(135deg,#0a0515,#150a20 50%,#0a0510);padding:20px}
+.section-title-script{font-family:'Great Vibes',cursive;font-size:clamp(1.7rem,6vw,2.6rem);color:var(--gold);text-align:center;margin-bottom:20px;text-shadow:0 0 20px rgba(201,169,110,.3)}
+.card-list{display:flex;flex-direction:column;gap:15px;max-width:450px;width:92%;max-height:58vh;overflow-y:auto;padding:5px 0;-webkit-overflow-scrolling:touch;touch-action:pan-y;scrollbar-width:none}
+.card-list::-webkit-scrollbar{display:none}
+.card-item{background:rgba(255,255,255,.04);border:1px solid rgba(201,169,110,.12);border-left:3px solid var(--gold);padding:16px 20px;border-radius:0 8px 8px 0;opacity:0;transform:translateX(-40px);transition:all .8s cubic-bezier(.4,0,.2,1);backdrop-filter:blur(10px)}
+.card-item.visible{opacity:1;transform:translateX(0) !important}
+.card-item-icon{font-size:1.3rem;margin-bottom:6px}
+.card-item-title{font-family:'Playfair Display',serif;font-size:.95rem;color:var(--gold);margin-bottom:5px;letter-spacing:1px}
+.card-item-text{font-family:'Cormorant Garamond',serif;font-size:clamp(.9rem,2.4vw,1.05rem);color:rgba(255,255,255,.85);line-height:1.7;font-style:italic}
+.section-btn{margin-top:20px;opacity:0}
+.section-btn.visible{animation:fadeInUp .8s forwards}
+
+/* ══════════ S4: NUESTRO FUTURO ══════════ */
+#screen-futuro{background:linear-gradient(135deg,#080a18,#101828 50%,#0a0c1a);padding:20px}
+.futuro-sub{font-family:'Cormorant Garamond',serif;font-size:.85rem;color:rgba(255,255,255,.4);letter-spacing:3px;text-transform:uppercase;text-align:center;margin-bottom:20px}
+
+/* ══════════ S5: PREGUNTA ══════════ */
+#screen-pregunta{background:radial-gradient(ellipse at 50% 30%,#0f0825,#050210 60%,#000005)}
+.pregunta-stars{position:absolute;inset:0}
+.star{position:absolute;width:2px;height:2px;background:#fff;border-radius:50%;animation:twinkle var(--dur) var(--delay) ease-in-out infinite}
+@keyframes twinkle{0%,100%{opacity:.2;transform:scale(1)}50%{opacity:1;transform:scale(1.5)}}
+.pregunta-content{text-align:center;z-index:2;padding:20px}
+.pregunta-texto{font-family:'Playfair Display',serif;font-size:clamp(1.4rem,5vw,2.4rem);color:var(--white);line-height:1.5;max-width:500px;text-shadow:0 0 30px rgba(201,169,110,.3)}
+.pregunta-texto .word{display:inline-block;opacity:0;transform:translateY(20px)}
+.pregunta-texto .word.visible{animation:wordIn .6s forwards}
+@keyframes wordIn{to{opacity:1;transform:translateY(0)}}
+.pregunta-highlight{color:var(--gold);font-family:'Great Vibes',cursive;font-size:clamp(2.3rem,8vw,3.8rem);display:block;margin-top:18px}
+.pregunta-btn-container{margin-top:40px;opacity:0;display:flex;flex-direction:column;align-items:center;gap:25px}
+.pregunta-btn-container.visible{animation:fadeInUp 1s forwards}
+.btn-no{font-family:'Cormorant Garamond',serif;font-size:.95rem;letter-spacing:2px;padding:12px 32px;border:2px solid rgba(255,255,255,.5);border-radius:50px;background:rgba(255,255,255,.08);color:rgba(255,255,255,.7);cursor:pointer;transition:all .15s ease;position:relative;text-transform:uppercase;backdrop-filter:blur(4px)}
+.btn-no:hover{border-color:rgba(255,255,255,.8);color:#fff}
+.btn-no.dodge{position:fixed !important;z-index:300;transition:left .1s ease,top .1s ease;border-color:#ff4060;color:#ff4060;background:rgba(255,64,96,.1)}
+
+/* ══════════ S6: CELEBRACIÓN ══════════ */
+#screen-celebracion{background:radial-gradient(ellipse at 50% 50%,#1a0a20,#0a0010 60%,#000)}
+.celebracion-text{font-family:'Great Vibes',cursive;font-size:clamp(2.5rem,10vw,5rem);color:var(--gold);text-shadow:0 0 40px rgba(201,169,110,.6);opacity:0;animation:celebIn 1.5s .5s forwards;text-align:center;z-index:2}
+@keyframes celebIn{0%{opacity:0;transform:scale(.3) rotate(-10deg)}50%{opacity:1;transform:scale(1.1) rotate(2deg)}100%{opacity:1;transform:scale(1) rotate(0)}}
+.celebracion-sub{font-family:'Cormorant Garamond',serif;font-size:clamp(1rem,3vw,1.3rem);color:rgba(255,255,255,.7);letter-spacing:3px;margin-top:18px;opacity:0;animation:fadeIn 2s 2s forwards;text-align:center;z-index:2}
+.celebracion-btn-container{margin-top:35px;opacity:0;z-index:2}
+.celebracion-btn-container.visible{animation:fadeInUp 1s forwards}
+#fireworks-canvas{position:absolute;inset:0;z-index:1}
+
+/* ══════════ S7: VOTOS ══════════ */
+#screen-votos{background:linear-gradient(135deg,#0f0a15,#1a1025 50%,#0f0810);padding:20px}
+.votos-container{display:flex;flex-direction:column;gap:14px;max-width:480px;width:92%;max-height:55vh;overflow-y:auto;-webkit-overflow-scrolling:touch;touch-action:pan-y;scrollbar-width:none}
+.votos-container::-webkit-scrollbar{display:none}
+.voto-card{background:linear-gradient(135deg,rgba(201,169,110,.08),rgba(201,169,110,.02));border:1px solid rgba(201,169,110,.1);padding:18px 22px;border-radius:12px;opacity:0;transform:scale(.9);transition:all .8s cubic-bezier(.4,0,.2,1)}
+.voto-card.visible{opacity:1;transform:scale(1)}
+.voto-card-ring{font-size:1.1rem;margin-bottom:6px}
+.voto-text{font-family:'Cormorant Garamond',serif;font-size:clamp(.9rem,2.4vw,1.05rem);color:rgba(255,255,255,.85);line-height:1.8;font-style:italic}
+.votos-firma{font-family:'Great Vibes',cursive;font-size:1.3rem;color:var(--gold);text-align:right;margin-top:12px;opacity:0}
+.votos-firma.visible{animation:fadeIn 1.5s forwards}
+
+/* ══════════ S8: ANILLOS ══════════ */
+#screen-anillos{background:radial-gradient(ellipse at 50% 40%,#1a1005,#0a0800 60%,#000);padding:20px}
+.anillos-sub{font-family:'Cormorant Garamond',serif;font-size:.85rem;color:rgba(255,255,255,.4);letter-spacing:3px;text-transform:uppercase;text-align:center;margin-bottom:30px;opacity:0}
+.anillos-sub.visible{animation:fadeIn 1.5s forwards}
+.anillos-display{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:25px;height:120px;cursor:pointer}
+.ring{width:80px;height:80px;border:6px solid;border-radius:50%;position:relative;transition:all 1.5s cubic-bezier(.4,0,.2,1)}
+.ring-nahur{border-color:var(--gold);transform:translateX(30px);box-shadow:0 0 15px rgba(201,169,110,.3),inset 0 0 15px rgba(201,169,110,.1)}
+.ring-eimy{border-color:var(--gold-light);transform:translateX(-30px);box-shadow:0 0 15px rgba(232,213,163,.3),inset 0 0 15px rgba(232,213,163,.1)}
+.ring.linked.ring-nahur{transform:translateX(8px)}
+.ring.linked.ring-eimy{transform:translateX(-8px)}
+.ring-label{position:absolute;bottom:-25px;left:50%;transform:translateX(-50%);font-family:'Great Vibes',cursive;font-size:1rem;color:var(--gold);white-space:nowrap}
+.anillos-msg{font-family:'Cormorant Garamond',serif;font-size:clamp(.9rem,2.5vw,1.1rem);color:rgba(255,255,255,.7);text-align:center;max-width:400px;line-height:1.8;font-style:italic;margin-bottom:20px;opacity:0}
+.anillos-msg.visible{animation:fadeIn 1.5s forwards}
+.anillos-tap{font-size:.8rem;color:rgba(201,169,110,.4);letter-spacing:3px;text-transform:uppercase;margin-bottom:15px;animation:breathe 2.5s ease-in-out infinite}
+
+/* ══════════ S9: ACTA ══════════ */
+#screen-acta{background:linear-gradient(180deg,#2a2018,#1a140e);padding:10px}
+.acta-scroll{max-width:560px;width:96%;max-height:90vh;overflow-y:auto;-webkit-overflow-scrolling:touch;touch-action:pan-y;scrollbar-width:none}
+.acta-scroll::-webkit-scrollbar{display:none}
+.acta-document{background:linear-gradient(180deg,var(--parchment),#efe5cd,var(--parchment));padding:clamp(18px,3.5vw,35px);border-radius:4px;box-shadow:0 20px 60px rgba(0,0,0,.6),0 0 0 4px var(--gold-dark),0 0 0 6px rgba(0,0,0,.3);position:relative}
+.acta-document::before{content:'';position:absolute;top:10px;left:10px;right:10px;bottom:10px;border:2px solid var(--gold);pointer-events:none}
+.acta-document::after{content:'';position:absolute;top:16px;left:16px;right:16px;bottom:16px;border:1px solid rgba(201,169,110,.3);pointer-events:none}
+.acta-ornament{text-align:center;font-size:1.3rem;color:var(--gold);margin-bottom:4px;letter-spacing:6px}
+.acta-header{text-align:center;margin-bottom:15px}
+.acta-republica{font-family:'Cinzel',serif;font-size:clamp(.6rem,1.7vw,.75rem);letter-spacing:4px;text-transform:uppercase;color:var(--gold-dark)}
+.acta-registro{font-family:'Cormorant Garamond',serif;font-size:clamp(.5rem,1.4vw,.65rem);letter-spacing:3px;text-transform:uppercase;color:#8a7a60}
+.acta-titulo{font-family:'Cinzel',serif;font-size:clamp(1.1rem,3.5vw,1.6rem);font-weight:900;text-align:center;color:var(--burgundy);margin:12px 0;letter-spacing:3px;text-transform:uppercase}
+.acta-numero{text-align:center;font-family:'Cormorant Garamond',serif;font-size:.8rem;color:var(--gold-dark);margin-bottom:15px;letter-spacing:2px}
+.acta-body{font-family:'Cormorant Garamond',serif;font-size:clamp(.8rem,2vw,.95rem);line-height:2;color:#3a2a1a;text-align:justify;margin-bottom:15px}
+.acta-name{font-family:'Great Vibes',cursive;font-size:clamp(1.1rem,3vw,1.4rem);color:var(--burgundy)}
+.acta-divider{text-align:center;color:var(--gold);margin:15px 0;letter-spacing:8px;font-size:.75rem}
+.acta-section-title{font-family:'Cinzel',serif;font-size:clamp(.65rem,1.8vw,.8rem);text-transform:uppercase;letter-spacing:3px;color:var(--burgundy);margin-bottom:10px;text-align:center}
+.acta-fingerprints-row{display:flex;justify-content:center;gap:clamp(15px,5vw,40px);margin:12px 0;flex-wrap:wrap}
+.acta-fingerprint-area{display:flex;flex-direction:column;align-items:center;gap:6px}
+.fingerprint-pad{width:100px;height:130px;border:2px dashed rgba(201,169,110,.35);border-radius:8px;background:rgba(255,250,240,.4);cursor:pointer;transition:all .4s;display:flex;align-items:center;justify-content:center}
+.fingerprint-pad.pressed{border-style:solid;border-color:var(--gold);background:rgba(255,250,240,.7)}
+.fingerprint-pad canvas{border-radius:6px}
+.fingerprint-label{font-family:'Cormorant Garamond',serif;font-size:.7rem;color:#8a7a60;letter-spacing:2px;text-transform:uppercase}
+.fingerprint-hint{font-size:.65rem;color:rgba(138,122,96,.5);font-style:italic;text-align:center}
+.acta-signatures-row{display:flex;justify-content:center;gap:clamp(10px,4vw,30px);margin:12px 0;flex-wrap:wrap}
+.acta-signature-area{display:flex;flex-direction:column;align-items:center;gap:5px}
+.signature-pad-container{position:relative;width:clamp(140px,38vw,200px)}
+.signature-pad{width:100%;height:80px;border:none;border-bottom:2px solid var(--gold);background:transparent;cursor:crosshair;touch-action:none}
+.signature-line-label{font-family:'Cormorant Garamond',serif;font-size:.65rem;color:rgba(138,122,96,.5);text-align:center;margin-top:2px}
+.signature-actions{display:flex;gap:8px;margin-top:3px}
+.acta-seal-area{text-align:center;margin:20px 0 12px}
+.acta-seal{width:80px;height:80px;border-radius:50%;border:3px solid var(--gold);margin:0 auto 8px;display:flex;align-items:center;justify-content:center;opacity:.3;transition:all .8s}
+.acta-seal.stamped{opacity:1;background:radial-gradient(circle at 40% 40%,var(--gold-light),var(--gold),var(--gold-dark));box-shadow:0 0 20px rgba(201,169,110,.5);animation:stampB .5s}
+@keyframes stampB{0%{transform:scale(2) rotate(-20deg);opacity:0}60%{transform:scale(.9) rotate(5deg)}100%{transform:scale(1) rotate(0);opacity:1}}
+.acta-seal-inner{font-family:'Cinzel',serif;font-size:.42rem;text-transform:uppercase;letter-spacing:1px;color:var(--ink);text-align:center;line-height:1.3}
+.acta-seal-monogram{font-family:'Great Vibes',cursive;font-size:1.1rem;display:block;color:var(--burgundy)}
+.acta-date{font-family:'Cormorant Garamond',serif;font-size:.8rem;color:#5a4a3a;text-align:center;margin-top:8px}
+.acta-btn-container{text-align:center;margin-top:18px;padding-bottom:8px}
+.btn-sellar{font-family:'Cinzel',serif;font-size:.8rem;letter-spacing:3px;text-transform:uppercase;padding:11px 30px;background:linear-gradient(135deg,var(--burgundy),var(--burgundy-deep));color:var(--gold);border:2px solid var(--gold);cursor:pointer;transition:all .4s}
+.btn-sellar:hover{background:var(--gold);color:var(--burgundy-deep);box-shadow:0 0 20px rgba(201,169,110,.4)}
+
+/* ══════════ S10: SELLADO ══════════ */
+#screen-sellado{background:radial-gradient(ellipse at 50% 50%,#1a1008,#0a0800 60%,#000);padding:15px;overflow-y:auto}
+.sellado-container{display:flex;flex-direction:column;align-items:center;gap:18px;max-width:500px;width:95%;padding-bottom:40px}
+.sello-oficial{width:clamp(160px,42vw,210px);height:clamp(160px,42vw,210px);border-radius:50%;position:relative;display:flex;align-items:center;justify-content:center;opacity:0;transform:scale(3) rotate(-30deg)}
+.sello-oficial.visible{animation:stampDrop 1s forwards}
+@keyframes stampDrop{0%{opacity:0;transform:scale(3) rotate(-30deg)}70%{opacity:1;transform:scale(.95) rotate(3deg)}85%{transform:scale(1.05) rotate(-1deg)}100%{opacity:1;transform:scale(1) rotate(0)}}
+.sello-ring-outer{position:absolute;inset:0;border:3px solid var(--gold);border-radius:50%}
+.sello-ring-inner{position:absolute;inset:8px;border:2px solid var(--gold);border-radius:50%}
+.sello-ring-innermost{position:absolute;inset:30px;border:1.5px solid rgba(201,169,110,.4);border-radius:50%}
+.circular-text-svg{position:absolute;inset:-5px;width:calc(100% + 10px);height:calc(100% + 10px)}
+.circular-text-svg text{fill:var(--gold);font-family:'Cinzel',serif;font-size:8.5px;letter-spacing:3px;text-transform:uppercase}
+.sello-center{text-align:center;z-index:2}
+.sello-center-icon{font-size:clamp(1.6rem,4vw,2rem);display:block;margin-bottom:2px}
+.sello-center-monogram{font-family:'Great Vibes',cursive;font-size:clamp(1.2rem,3.5vw,1.6rem);color:var(--gold);display:block}
+.sello-center-year{font-family:'Cinzel',serif;font-size:clamp(.45rem,1.2vw,.6rem);color:var(--gold-dark);letter-spacing:3px;display:block;margin-top:2px}
+.sello-rect{border:3px solid var(--gold);padding:8px 25px;opacity:0;transform:rotate(-8deg) scale(2)}
+.sello-rect.visible{animation:rectStamp .6s .5s forwards}
+@keyframes rectStamp{0%{opacity:0;transform:rotate(-8deg) scale(2)}70%{opacity:1;transform:rotate(-6deg) scale(.95)}100%{opacity:1;transform:rotate(-5deg) scale(1)}}
+.sello-rect-inner{position:relative}
+.sello-rect::before{content:'';position:absolute;top:3px;bottom:3px;left:3px;right:3px;border:1px solid rgba(201,169,110,.5)}
+.sello-rect-text{font-family:'Cinzel',serif;font-size:clamp(.65rem,1.8vw,.8rem);color:var(--gold);letter-spacing:4px;text-transform:uppercase;text-align:center}
+.sellado-registry{opacity:0;text-align:center;width:100%}
+.sellado-registry.visible{animation:fadeIn 1s 1s forwards}
+.registry-box{border:1px solid rgba(201,169,110,.2);padding:15px 20px;background:rgba(201,169,110,.03)}
+.registry-title{font-family:'Cinzel',serif;font-size:.65rem;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
+.registry-row{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid rgba(201,169,110,.08);font-family:'Cormorant Garamond',serif;font-size:.8rem;color:rgba(255,255,255,.6)}
+.registry-row:last-child{border:none}
+.registry-label{color:rgba(255,255,255,.35);letter-spacing:1px;text-transform:uppercase;font-size:.65rem}
+.registry-value{color:var(--gold);font-weight:600}
+.sellado-legal{font-family:'Cormorant Garamond',serif;font-size:.7rem;color:rgba(255,255,255,.25);text-align:center;line-height:1.6;max-width:400px;opacity:0;font-style:italic}
+.sellado-legal.visible{animation:fadeIn 1s 1.5s forwards}
+.sellado-btn-container{margin-top:15px;opacity:0;display:flex;flex-direction:column;align-items:center;gap:12px}
+.sellado-btn-container.visible{animation:fadeInUp 1s forwards}
+
+/* ══════════ S11: DECLARACIÓN ══════════ */
+#screen-declaracion{background:linear-gradient(135deg,#0a0510,#150a1a 50%,#0a0508);padding:20px}
+.declaracion-content{text-align:center;max-width:480px;width:92%}
+.declaracion-badge{width:100px;height:100px;border-radius:50%;border:2px solid var(--gold);margin:0 auto 20px;display:flex;align-items:center;justify-content:center;background:rgba(201,169,110,.05);opacity:0}
+.declaracion-badge.visible{animation:fadeInUp 1s forwards}
+.declaracion-badge-inner{font-size:2.5rem}
+.declaracion-title{font-family:'Cinzel',serif;font-size:clamp(.8rem,2.2vw,1rem);letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:20px;opacity:0}
+.declaracion-title.visible{animation:fadeIn 1s .5s forwards}
+.declaracion-text{font-family:'Cormorant Garamond',serif;font-size:clamp(.9rem,2.4vw,1.05rem);color:rgba(255,255,255,.7);line-height:2;font-style:italic;opacity:0;margin-bottom:20px}
+.declaracion-text.visible{animation:fadeIn 1.5s 1s forwards}
+.declaracion-names{font-family:'Great Vibes',cursive;font-size:clamp(1.8rem,6vw,2.5rem);color:var(--gold);margin-bottom:8px;opacity:0;text-shadow:0 0 20px rgba(201,169,110,.3)}
+.declaracion-names.visible{animation:fadeInUp 1s 1.5s forwards}
+.declaracion-status{font-family:'Cinzel',serif;font-size:clamp(.6rem,1.5vw,.75rem);letter-spacing:5px;text-transform:uppercase;color:var(--gold-dark);opacity:0;margin-bottom:25px}
+.declaracion-status.visible{animation:fadeIn 1s 2s forwards}
+.declaracion-btn-container{opacity:0}
+.declaracion-btn-container.visible{animation:fadeInUp 1s forwards}
+
+/* ══════════ S12: FINAL ══════════ */
+#screen-final{background:radial-gradient(ellipse at 50% 40%,#1a0520,#0a0010 50%,#000)}
+.final-content{text-align:center;z-index:2;padding:20px}
+.final-names{font-family:'Great Vibes',cursive;font-size:clamp(2.5rem,10vw,5rem);color:var(--gold);text-shadow:0 0 40px rgba(201,169,110,.5);opacity:0}
+.final-names.visible{animation:fadeInUp 2s forwards}
+.final-amp{font-family:'Playfair Display',serif;font-size:clamp(1.2rem,3vw,1.8rem);color:var(--gold-dark);display:block;margin:5px 0}
+.final-siempre{font-family:'Cinzel',serif;font-size:clamp(.75rem,2.2vw,1rem);letter-spacing:8px;text-transform:uppercase;color:var(--gold-dark);margin-top:22px;opacity:0}
+.final-siempre.visible{animation:fadeIn 2s 1s forwards}
+.final-message{font-family:'Cormorant Garamond',serif;font-size:clamp(.88rem,2.4vw,1.05rem);color:rgba(255,255,255,.55);max-width:400px;line-height:1.9;margin-top:25px;opacity:0;font-style:italic}
+.final-message.visible{animation:fadeIn 2s 2s forwards}
+.final-date{font-family:'Cormorant Garamond',serif;font-size:.75rem;color:var(--gold-dark);margin-top:22px;letter-spacing:3px;opacity:0}
+.final-date.visible{animation:fadeIn 2s 3s forwards}
+.final-heart{font-size:1.8rem;margin-top:18px;opacity:0;display:inline-block}
+.final-heart.visible{animation:heartBeat 1.5s 3.5s forwards}
+@keyframes heartBeat{0%{opacity:0;transform:scale(0)}30%{opacity:1;transform:scale(1.3)}50%{transform:scale(.9)}70%{transform:scale(1.15)}100%{opacity:1;transform:scale(1)}}
+#final-canvas{position:absolute;inset:0;z-index:1}
+.final-download{margin-top:20px;opacity:0;z-index:2}
+.final-download.visible{animation:fadeIn 2s 4.5s forwards}
+
+/* Download overlay */
+.download-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:500;align-items:center;justify-content:center;flex-direction:column;gap:20px}
+.download-overlay.active{display:flex}
+.download-spinner{width:40px;height:40px;border:3px solid rgba(201,169,110,.2);border-top-color:var(--gold);border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.download-text{font-family:'Cormorant Garamond',serif;color:var(--gold);font-size:1rem;letter-spacing:2px}
+
+@media(max-width:380px){
+  .acta-document{padding:14px}
+  .acta-document::before{top:6px;left:6px;right:6px;bottom:6px}
+  .acta-document::after{top:10px;left:10px;right:10px;bottom:10px}
+  .fingerprint-pad{width:85px;height:110px}
+}
+</style>
+</head>
+<body>
+
+<canvas id="particles-canvas"></canvas>
+<audio id="bg-music" src="audio.mp3" loop preload="auto"></audio>
+<div class="progress-bar" id="progress-bar"></div>
+
+<!-- Download overlay -->
+<div class="download-overlay" id="download-overlay">
+  <div class="download-spinner"></div>
+  <div class="download-text">Generando certificado...</div>
+</div>
+
+<!-- S0: INICIO -->
+<div class="screen active" id="screen-inicio">
+  <div class="inicio-content">
+    <div class="inicio-monogram">Nahur<span class="inicio-amp">&</span>Eimy</div>
+    <div class="inicio-sub">Una historia de amor eterno</div>
+    <div class="inicio-tap">Toca para comenzar</div>
+  </div>
+</div>
+
+<!-- S1: SOBRE -->
+<div class="screen" id="screen-sobre">
+  <div class="envelope-container" id="envelope-container">
+    <div class="envelope" id="envelope">
+      <div class="envelope-flap"></div>
+      <div class="envelope-body">
+        <div class="wax-seal"><span class="wax-seal-text">N♡E</span></div>
+        <div class="envelope-letter">Para ti, mi amor</div>
+      </div>
+    </div>
+  </div>
+  <div class="sobre-hint">Toca el sobre para abrirlo</div>
+</div>
+
+<!-- S2: CARTA -->
+<div class="screen" id="screen-carta">
+  <div class="carta-paper" id="carta-paper">
+    <div class="carta-saludo">Mi querida Eimy,</div>
+    <div class="carta-texto" id="carta-texto"></div>
+    <div class="carta-firma" id="carta-firma">Con todo mi amor, Nahur ♡</div>
+    <div class="carta-continuar" id="carta-continuar">
+      <button class="btn" onclick="goTo(3)">Continuar →</button>
+    </div>
+  </div>
+</div>
+
+<!-- S3: HISTORIA -->
+<div class="screen" id="screen-historia">
+  <div class="section-title-script">Por qué te amo</div>
+  <div class="card-list" id="historia-cards"></div>
+  <div class="section-btn" id="historia-btn">
+    <button class="btn" onclick="goTo(4)">Quiero enseñarte algo más...</button>
+  </div>
+</div>
+
+<!-- S4: NUESTRO FUTURO -->
+<div class="screen" id="screen-futuro">
+  <div class="section-title-script">Lo que sueño contigo</div>
+  <div class="futuro-sub">Nuestro futuro juntos</div>
+  <div class="card-list" id="futuro-cards"></div>
+  <div class="section-btn" id="futuro-btn">
+    <button class="btn" onclick="goTo(5)">Tengo algo que preguntarte...</button>
+  </div>
+</div>
+
+<!-- S5: PREGUNTA -->
+<div class="screen" id="screen-pregunta">
+  <div class="pregunta-stars" id="pregunta-stars"></div>
+  <div class="pregunta-content">
+    <div class="pregunta-texto" id="pregunta-texto"></div>
+    <div class="pregunta-btn-container" id="pregunta-btn">
+      <button class="btn-accept" onclick="acceptProposal()">Sí, acepto ♡</button>
+      <button class="btn-no" id="btn-no">No acepto</button>
+    </div>
+  </div>
+</div>
+
+<!-- S6: CELEBRACIÓN -->
+<div class="screen" id="screen-celebracion">
+  <canvas id="fireworks-canvas"></canvas>
+  <div class="celebracion-text">¡Acepto!</div>
+  <div class="celebracion-sub">El universo entero celebra este momento</div>
+  <div class="celebracion-btn-container" id="celebracion-btn">
+    <button class="btn btn-gold" onclick="goTo(7)">Leer mis votos para ti</button>
+  </div>
+</div>
+
+<!-- S7: VOTOS -->
+<div class="screen" id="screen-votos">
+  <div class="section-title-script">Mis votos para ti</div>
+  <div class="votos-container" id="votos-container"></div>
+  <div class="votos-firma" id="votos-firma">— Nahur, tu esposo ♡</div>
+  <div class="section-btn" id="votos-btn">
+    <button class="btn btn-gold" onclick="goTo(8)">El intercambio de anillos</button>
+  </div>
+</div>
+
+<!-- S8: ANILLOS -->
+<div class="screen" id="screen-anillos">
+  <div class="section-title-script">Nuestros Anillos</div>
+  <div class="anillos-sub" id="anillos-sub">Símbolo de nuestro amor eterno</div>
+  <div class="anillos-display" id="anillos-display">
+    <div class="ring ring-nahur" id="ring-nahur"><span class="ring-label">Nahur</span></div>
+    <div class="ring ring-eimy" id="ring-eimy"><span class="ring-label">Eimy</span></div>
+  </div>
+  <div class="anillos-tap" id="anillos-tap">Toca para unir los anillos</div>
+  <div class="anillos-msg" id="anillos-msg">
+    Estos anillos representan un amor sin inicio y sin final. Un círculo perfecto, como lo nuestro.
+    Donde termina uno, comienza el otro. Inseparables. Eternos. Como tú y yo.
+  </div>
+  <div class="section-btn" id="anillos-btn">
+    <button class="btn btn-gold" onclick="goTo(9)">Firmar nuestra acta</button>
+  </div>
+</div>
+
+<!-- S9: ACTA -->
+<div class="screen" id="screen-acta">
+  <div class="acta-scroll" id="acta-scroll">
+    <div class="acta-document" id="acta-document">
+      <div class="acta-ornament">✦ ✦ ✦</div>
+      <div class="acta-header">
+        <div class="acta-republica">República del Amor Infinito</div>
+        <div class="acta-registro">Registro Civil de los Corazones Unidos</div>
+      </div>
+      <div class="acta-titulo">Acta de Matrimonio</div>
+      <div class="acta-numero">Acta No. ∞ — Tomo E.N. — Folio ♡ — Partida 1 de 1</div>
+      <div class="acta-body" id="acta-body"></div>
+      <div class="acta-divider">— ♡ —</div>
+
+      <div class="acta-section-title">Huellas de los Contrayentes</div>
+      <div class="acta-fingerprints-row">
+        <div class="acta-fingerprint-area">
+          <div class="fingerprint-pad" id="fp-nahur"><canvas id="fp-canvas-nahur" width="96" height="126"></canvas></div>
+          <div class="fingerprint-label">Nahur</div>
+          <div class="fingerprint-hint" id="fp-hint-nahur">Mantén presionado</div>
+        </div>
+        <div class="acta-fingerprint-area">
+          <div class="fingerprint-pad" id="fp-eimy"><canvas id="fp-canvas-eimy" width="96" height="126"></canvas></div>
+          <div class="fingerprint-label">Eimy</div>
+          <div class="fingerprint-hint" id="fp-hint-eimy">Mantén presionado</div>
+        </div>
+      </div>
+
+      <div class="acta-divider">— ♡ —</div>
+
+      <div class="acta-section-title">Firmas de los Contrayentes</div>
+      <div class="acta-signatures-row">
+        <div class="acta-signature-area">
+          <div class="signature-pad-container">
+            <canvas class="signature-pad" id="sig-nahur"></canvas>
+            <div class="signature-line-label">Nahur</div>
+          </div>
+          <div class="signature-actions"><button class="btn-small" onclick="clearSig('nahur')">Limpiar</button></div>
+        </div>
+        <div class="acta-signature-area">
+          <div class="signature-pad-container">
+            <canvas class="signature-pad" id="sig-eimy"></canvas>
+            <div class="signature-line-label">Eimy</div>
+          </div>
+          <div class="signature-actions"><button class="btn-small" onclick="clearSig('eimy')">Limpiar</button></div>
+        </div>
+      </div>
+
+      <div class="acta-divider">— ✦ —</div>
+
+      <div class="acta-seal-area">
+        <div class="acta-seal" id="acta-seal">
+          <div class="acta-seal-inner">
+            <span>certificado</span>
+            <span class="acta-seal-monogram">N & E</span>
+            <span>oficial</span>
+          </div>
+        </div>
+        <div class="acta-date" id="acta-date"></div>
+      </div>
+
+      <div class="acta-btn-container" id="acta-btns">
+        <button class="btn-sellar" onclick="sellarActa()">✦ Sellar y Registrar Acta ✦</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S10: SELLADO -->
+<div class="screen" id="screen-sellado">
+  <div class="sellado-container">
+    <div class="sello-oficial" id="sello-oficial">
+      <div class="sello-ring-outer"></div>
+      <div class="sello-ring-inner"></div>
+      <div class="sello-ring-innermost"></div>
+      <svg class="circular-text-svg" viewBox="0 0 200 200">
+        <defs>
+          <path id="circlePath" d="M 100,100 m -72,0 a 72,72 0 1,1 144,0 a 72,72 0 1,1 -144,0"/>
+          <path id="circlePathBottom" d="M 100,100 m 72,0 a 72,72 0 1,1 -144,0 a 72,72 0 1,1 144,0"/>
+        </defs>
+        <text><textPath href="#circlePath">✦ REGISTRO CIVIL DE LOS CORAZONES UNIDOS ✦</textPath></text>
+        <text><textPath href="#circlePathBottom">✦ REPÚBLICA DEL AMOR INFINITO ✦</textPath></text>
+      </svg>
+      <div class="sello-center">
+        <span class="sello-center-icon">⚖</span>
+        <span class="sello-center-monogram">N & E</span>
+        <span class="sello-center-year">MMXXVI</span>
+      </div>
+    </div>
+
+    <div class="sello-rect" id="sello-rect">
+      <div class="sello-rect-text">✦ REGISTRADO ✦</div>
+    </div>
+
+    <div class="sellado-registry" id="sellado-registry">
+      <div class="registry-box">
+        <div class="registry-title">Datos de Registro</div>
+        <div class="registry-row"><span class="registry-label">No. de Acta</span><span class="registry-value" id="reg-acta">∞-2026</span></div>
+        <div class="registry-row"><span class="registry-label">Tomo</span><span class="registry-value">E.N. — Vol. ♡</span></div>
+        <div class="registry-row"><span class="registry-label">Folio</span><span class="registry-value" id="reg-folio"></span></div>
+        <div class="registry-row"><span class="registry-label">Partida</span><span class="registry-value">1 de 1 — Única e Irrepetible</span></div>
+        <div class="registry-row"><span class="registry-label">Fecha de Registro</span><span class="registry-value" id="reg-fecha"></span></div>
+        <div class="registry-row"><span class="registry-label">Hora</span><span class="registry-value" id="reg-hora"></span></div>
+        <div class="registry-row"><span class="registry-label">Estado</span><span class="registry-value" style="color:#4ade80">VIGENTE — PERMANENTE</span></div>
+      </div>
+    </div>
+
+    <div class="sellado-legal" id="sellado-legal">
+      El presente documento tiene validez emocional absoluta y permanente en todos los rincones
+      del universo conocido y desconocido. Cualquier intento de anulación será rechazado por las
+      fuerzas cósmicas del amor verdadero. Registrado ante las estrellas y el destino como testigos eternos.
+    </div>
+
+    <div class="sellado-btn-container" id="sellado-btn">
+      <button class="btn btn-gold" onclick="goTo(11)">Continuar</button>
+      <button class="btn-download" onclick="downloadCertificate()">📜 Guardar Certificado como Imagen</button>
+    </div>
+  </div>
+</div>
+
+<!-- S11: DECLARACIÓN -->
+<div class="screen" id="screen-declaracion">
+  <div class="declaracion-content">
+    <div class="declaracion-badge" id="decl-badge"><div class="declaracion-badge-inner">💒</div></div>
+    <div class="declaracion-title" id="decl-title">Declaración Oficial de Matrimonio</div>
+    <div class="declaracion-text" id="decl-text">
+      Por el poder que me confiere el universo, las estrellas y cada latido
+      sincronizado de sus corazones, yo declaro a <strong>Nahur</strong> y <strong>Eimy</strong>
+      oficialmente unidos en matrimonio eterno. Lo que el amor verdadero ha unido,
+      que nada ni nadie lo separe. Desde este momento y para siempre, son uno solo.
+    </div>
+    <div class="declaracion-names" id="decl-names">Nahur & Eimy</div>
+    <div class="declaracion-status" id="decl-status">✦ Oficialmente Casados ✦</div>
+    <div class="declaracion-btn-container" id="decl-btn">
+      <button class="btn btn-gold" onclick="goTo(12)">Nuestro para siempre</button>
+    </div>
+  </div>
+</div>
+
+<!-- S12: FINAL -->
+<div class="screen" id="screen-final">
+  <canvas id="final-canvas"></canvas>
+  <div class="final-content">
+    <div class="final-names" id="final-names">Nahur<span class="final-amp">&</span>Eimy</div>
+    <div class="final-siempre" id="final-siempre">Para siempre</div>
+    <div class="final-message" id="final-message">
+      Este es solo el comienzo de nuestra historia juntos.
+      Cada día a tu lado es el mejor regalo que la vida me ha dado.
+      Gracias por existir, por quedarte, por amarme como lo haces.
+      Te amo hoy, mañana y por toda la eternidad, Eimy.
+    </div>
+    <div class="final-date" id="final-date"></div>
+    <div class="final-heart" id="final-heart">💍</div>
+    <div class="final-download" id="final-download">
+      <button class="btn-download" onclick="downloadCertificate()">📜 Guardar Certificado</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════
+//              CORE
+// ══════════════════════════════════════
+let currentScreen=0;
+const screenIds=['screen-inicio','screen-sobre','screen-carta','screen-historia','screen-futuro','screen-pregunta','screen-celebracion','screen-votos','screen-anillos','screen-acta','screen-sellado','screen-declaracion','screen-final'];
+const totalScreens=screenIds.length;
+let transitioning=false;
+
+(function(){const b=document.getElementById('progress-bar');for(let i=0;i<totalScreens;i++){const d=document.createElement('div');d.className='progress-dot';b.appendChild(d)}})();
+
+function goTo(i){
+  if(transitioning||i===currentScreen||i<0||i>=totalScreens)return;
+  transitioning=true;
+  document.getElementById(screenIds[currentScreen]).classList.remove('active');
+  setTimeout(()=>{document.getElementById(screenIds[i]).classList.add('active');currentScreen=i;updateProgress();onScreenEnter(i);transitioning=false},800);
+}
+function updateProgress(){
+  const b=document.getElementById('progress-bar');b.classList.toggle('visible',currentScreen>0);
+  const dots=b.querySelectorAll('.progress-dot');
+  dots.forEach((d,i)=>{d.classList.remove('active','done');if(i===currentScreen)d.classList.add('active');else if(i<currentScreen)d.classList.add('done')});
+}
+
+// ══════════════════════════════════════
+//          PARTICLE SYSTEM
+// ══════════════════════════════════════
+const pC=document.getElementById('particles-canvas'),pX=pC.getContext('2d');
+let parts=[];
+function resPC(){pC.width=innerWidth;pC.height=innerHeight}
+resPC();addEventListener('resize',resPC);
+
+class Pt{
+  constructor(t){this.t=t;this.x=Math.random()*pC.width;this.y=t==='petal'||t==='confetti'?-20:t==='heart-up'?pC.height+20:Math.random()*pC.height;this.sz=2+Math.random()*4;this.vy=t==='heart-up'?-(1+Math.random()*2):.3+Math.random()*1.5;this.vx=(Math.random()-.5)*1.5;this.op=.3+Math.random()*.7;this.rot=Math.random()*360;this.rs=(Math.random()-.5)*3;this.life=1;this.decay=.001+Math.random()*.003;this.col=this.gc();this.w=Math.random()*Math.PI*2;this.ws=.02+Math.random()*.03}
+  gc(){const c={sparkle:['#c9a96e','#e8d5a3','#fff8e0','#ffd700'],petal:['#c4566a','#e8a0b0','#d4728a','#f0c0d0'],'heart-up':['#ff4060','#ff6080','#c9a96e','#e8d5a3'],confetti:['#ff4060','#ffd700','#00d4ff','#ff60a0','#c9a96e','#50ff50','#ff8040']};const a=c[this.t]||c.sparkle;return a[~~(Math.random()*a.length)]}
+  update(){this.w+=this.ws;this.x+=this.vx+Math.sin(this.w)*.5;this.y+=this.vy;this.rot+=this.rs;this.life-=this.decay;if(this.t==='confetti')this.vy+=.02;return this.life>0&&this.y<pC.height+30&&this.y>-30}
+  draw(c){c.save();c.globalAlpha=this.op*Math.max(0,this.life);c.translate(this.x,this.y);c.rotate(this.rot*Math.PI/180);c.fillStyle=this.col;if(this.t==='sparkle'){c.beginPath();c.arc(0,0,this.sz*.5,0,Math.PI*2);c.fill();c.globalAlpha*=.3;c.beginPath();c.arc(0,0,this.sz,0,Math.PI*2);c.fill()}else if(this.t==='petal'){c.beginPath();c.ellipse(0,0,this.sz*1.5,this.sz*.7,0,0,Math.PI*2);c.fill()}else if(this.t==='heart-up'){const s=this.sz*.6;c.beginPath();c.moveTo(0,s*.4);c.bezierCurveTo(-s,-s*.5,-s*.5,-s*1.2,0,-s*.5);c.bezierCurveTo(s*.5,-s*1.2,s,-s*.5,0,s*.4);c.fill()}else if(this.t==='confetti'){c.fillRect(-this.sz*.5,-this.sz*.2,this.sz,this.sz*.4)}c.restore()}
+}
+function spawnP(t,n){for(let i=0;i<n;i++)parts.push(new Pt(t))}
+function spawnBurst(t,n,cx,cy){for(let i=0;i<n;i++){const p=new Pt(t);p.x=cx;p.y=cy;const a=Math.random()*Math.PI*2,s=2+Math.random()*5;p.vx=Math.cos(a)*s;p.vy=Math.sin(a)*s-2;p.decay=.008+Math.random()*.01;parts.push(p)}}
+(function anim(){pX.clearRect(0,0,pC.width,pC.height);parts=parts.filter(p=>{const a=p.update();if(a)p.draw(pX);return a});requestAnimationFrame(anim)})();
+
+let pInt=null;
+function setPM(m){if(pInt)clearInterval(pInt);parts=[];if(m==='sparkles')pInt=setInterval(()=>spawnP('sparkle',1),200);else if(m==='petals')pInt=setInterval(()=>spawnP('petal',1),150);else if(m==='hearts')pInt=setInterval(()=>spawnP('heart-up',2),100);else if(m==='celebration')pInt=setInterval(()=>{spawnP('confetti',2);spawnP('heart-up',1);spawnP('sparkle',1)},80)}
+
+// ══════════════════════════════════════
+//            FIREWORKS
+// ══════════════════════════════════════
+let fwC,fwX,fws=[],fwPs=[],fwR=false;
+function initFW(id){fwC=document.getElementById(id);fwX=fwC.getContext('2d');fwC.width=innerWidth;fwC.height=innerHeight;fws=[];fwPs=[];fwR=true;animFW();launchFW()}
+function launchFW(){if(!fwR)return;fws.push({x:fwC.width*(.2+Math.random()*.6),y:fwC.height,ty:fwC.height*(.15+Math.random()*.35),sp:4+Math.random()*3,col:`hsl(${~~(Math.random()*360)},80%,60%)`,trail:[]});setTimeout(launchFW,400+Math.random()*800)}
+function explodeFW(f){const n=40+Math.random()*40;for(let i=0;i<n;i++){const a=(Math.PI*2/n)*i+(Math.random()-.5)*.3,s=2+Math.random()*4;fwPs.push({x:f.x,y:f.y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:1,decay:.01+Math.random()*.015,col:f.col,sz:1.5+Math.random()*1.5})}}
+function animFW(){if(!fwR)return;fwX.fillStyle='rgba(0,0,0,0.15)';fwX.fillRect(0,0,fwC.width,fwC.height);fws=fws.filter(f=>{f.y-=f.sp;f.trail.push({x:f.x,y:f.y});if(f.trail.length>8)f.trail.shift();f.trail.forEach((t,i)=>{fwX.beginPath();fwX.arc(t.x,t.y,2,0,Math.PI*2);fwX.fillStyle=f.col;fwX.globalAlpha=i/f.trail.length*.5;fwX.fill()});fwX.globalAlpha=1;if(f.y<=f.ty){explodeFW(f);return false}return true});fwPs=fwPs.filter(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.04;p.vx*=.99;p.life-=p.decay;if(p.life<=0)return false;fwX.beginPath();fwX.arc(p.x,p.y,p.sz,0,Math.PI*2);fwX.fillStyle=p.col;fwX.globalAlpha=p.life;fwX.fill();fwX.globalAlpha=1;return true});requestAnimationFrame(animFW)}
+
+// ══════════════════════════════════════
+//         SCREEN HANDLERS
+// ══════════════════════════════════════
+function onScreenEnter(i){
+  switch(i){
+    case 0:case 1:setPM('sparkles');break;
+    case 2:setPM('petals');startCarta();break;
+    case 3:setPM('sparkles');startHistoria();break;
+    case 4:setPM('sparkles');startFuturo();break;
+    case 5:setPM('none');startPregunta();break;
+    case 6:setPM('celebration');startCelebracion();break;
+    case 7:setPM('sparkles');startVotos();break;
+    case 8:setPM('sparkles');startAnillos();break;
+    case 9:setPM('none');startActa();break;
+    case 10:setPM('sparkles');startSellado();break;
+    case 11:setPM('hearts');startDeclaracion();break;
+    case 12:startFinal();break;
+  }
+}
+
+// S0
+document.getElementById('screen-inicio').addEventListener('click',()=>{if(currentScreen===0)goTo(1)});
+setPM('sparkles');
+
+// S1 - Envelope + Start Music
+let envO=false;
+document.getElementById('envelope-container').addEventListener('click',()=>{
+  if(envO)return;envO=true;
+  document.getElementById('envelope').classList.add('open');
+  spawnBurst('sparkle',30,pC.width/2,pC.height/2);
+  // Start background music
+  const music=document.getElementById('bg-music');
+  music.volume=0.5;
+  music.play().catch(()=>{});
+  setTimeout(()=>goTo(2),2500);
+});
+
+// "No acepto" dodge button
+(function(){
+  const btn=document.getElementById('btn-no');
+  let dodgeCount=0;
+  const messages=['¿Segura? 😏','Jaja, no puedes 😂','Inténtalo otra vez 😜','¡Imposible! 💪','Ese botón no funciona 🚫','Dale a Sí mejor ♡','¡No te dejaré! 😤','Ni lo sueñes 😂','¿Todavía intentas? 🤣','Ríndete y di que sí 💍'];
+
+  function dodge(e){
+    e.preventDefault();
+    e.stopPropagation();
+    btn.classList.add('dodge');
+    dodgeCount++;
+
+    // Random position within viewport with padding
+    const pad=80;
+    const maxX=window.innerWidth-btn.offsetWidth-pad;
+    const maxY=window.innerHeight-btn.offsetHeight-pad;
+    const nx=pad+Math.random()*maxX;
+    const ny=pad+Math.random()*maxY;
+    btn.style.left=nx+'px';
+    btn.style.top=ny+'px';
+
+    // Change text occasionally
+    if(dodgeCount%2===0){
+      btn.textContent=messages[dodgeCount%messages.length];
+    }
+  }
+
+  btn.addEventListener('mouseover',dodge);
+  btn.addEventListener('touchstart',dodge,{passive:false});
+  btn.addEventListener('click',(e)=>{e.preventDefault();dodge(e)});
+})();
+
+// S2: CARTA
+const cartaLines=["No encuentro en todo el universo las palabras perfectas para describir lo que significas para mí, pero voy a intentarlo con el corazón en la mano.","","Desde que apareciste en mi vida, cada día tiene más color, más sentido y más magia. Tu risa es la melodía que quiero escuchar cada mañana al despertar.","","Me enamoré de tus ojos, de tu forma de ver el mundo, de esa fuerza que llevas por dentro y de esa ternura con la que me miras cuando crees que no me doy cuenta.","","Eimy, contigo descubrí que el amor no es solo un sentimiento bonito. Es una decisión que tomo cada día con el corazón latiendo fuerte... y cada día te elijo a ti.","","Eres mi persona favorita en este mundo. Mi confidente. Mi paz. Mi locura bonita. Mi todo.","","Hoy quiero darte algo especial. Algo que selle lo que mi corazón ya sabe desde hace mucho tiempo...","","Sigue leyendo, mi amor. Lo mejor está por venir. ♡"];
+function startCarta(){const c=document.getElementById('carta-texto');c.innerHTML='';cartaLines.forEach((l,i)=>{const s=document.createElement('span');s.className='line';s.innerHTML=l||'<br>';c.appendChild(s);setTimeout(()=>s.classList.add('visible'),500+i*420)});const t=500+cartaLines.length*420+600;setTimeout(()=>document.getElementById('carta-firma').classList.add('visible'),t);setTimeout(()=>document.getElementById('carta-continuar').classList.add('visible'),t+800)}
+
+// S3: HISTORIA
+function buildCards(containerId, items, btnId, hasTitle){
+  const c=document.getElementById(containerId);c.innerHTML='';
+  items.forEach((it,i)=>{
+    const d=document.createElement('div');
+    d.className='card-item';
+    let html='<div class="card-item-icon">'+it.icon+'</div>';
+    if(hasTitle && it.title) html+='<div class="card-item-title">'+it.title+'</div>';
+    html+='<div class="card-item-text">'+it.text+'</div>';
+    d.innerHTML=html;
+    c.appendChild(d);
+    setTimeout(()=>d.classList.add('visible'),300+i*500);
+  });
+  if(btnId) setTimeout(()=>document.getElementById(btnId).classList.add('visible'),300+items.length*500+600);
+}
+
+const histItems=[
+  {icon:'✨',text:'El día que te vi por primera vez, algo dentro de mí supo que mi vida estaba a punto de cambiar para siempre. No fue casualidad, fue el destino.'},
+  {icon:'💫',text:'Tu risa se convirtió en mi sonido favorito. Cada vez que sonríes, juro que el mundo entero se detiene solo para admirarte.'},
+  {icon:'🌙',text:'En las noches más largas, pensar en ti es mi forma de encontrar la luz. Eres mi luna, mi estrella, mi cielo entero.'},
+  {icon:'🔥',text:'Me enamoré de tu fuerza, de esa valentía con la que enfrentas todo. Eres más increíble de lo que te imaginas, Eimy.'},
+  {icon:'🌹',text:'Cada momento a tu lado se graba en mi memoria como un tatuaje en el alma. No hay tesoro más valioso.'},
+  {icon:'💎',text:'Contigo aprendí que el amor verdadero no es perfecto, es real. Y lo nuestro es lo más real que he sentido jamás.'},
+  {icon:'🦋',text:'Me haces querer ser mejor persona cada día. Me inspiras sin siquiera intentarlo.'},
+  {icon:'∞',text:'No importa cuántas vidas tenga, en todas y cada una te volvería a elegir sin dudarlo ni un segundo.'},
+];
+function startHistoria(){buildCards('historia-cards',histItems,'historia-btn',false)}
+
+// S4: FUTURO
+const futuroItems=[
+  {icon:'🏡',title:'Nuestro hogar',text:'Sueño con una casa que huela a café por las mañanas, llena de risas, de tu música y de nuestro amor en cada rincón.'},
+  {icon:'✈️',title:'Nuestras aventuras',text:'Quiero recorrer el mundo contigo. Descubrir playas escondidas, perdernos en ciudades nuevas, y crear recuerdos en cada lugar que pisemos juntos.'},
+  {icon:'🌅',title:'Nuestras mañanas',text:'Despertar a tu lado cada día, verte abrir los ojos y saber que esa es la vista más hermosa que existe.'},
+  {icon:'🎄',title:'Nuestras tradiciones',text:'Crear nuestras propias costumbres. Navidades juntos, aniversarios inolvidables, y un millón de "te acuerdas cuando..."'},
+  {icon:'👴🏽👵🏽',title:'Nuestro para siempre',text:'Envejecer a tu lado, con el pelo blanco y el corazón igual de enamorado que hoy. Sentados juntos, tomados de la mano, diciéndonos "lo logramos".'},
+  {icon:'⭐',title:'Nuestro legado',text:'Construir algo hermoso juntos. Una historia de amor que inspire, que demuestre que el amor verdadero sí existe.'},
+];
+function startFuturo(){buildCards('futuro-cards',futuroItems,'futuro-btn',true)}
+
+// S5: PREGUNTA
+function startPregunta(){
+  const sc=document.getElementById('pregunta-stars');sc.innerHTML='';
+  for(let i=0;i<100;i++){const s=document.createElement('div');s.className='star';s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;--dur:${2+Math.random()*3}s;--delay:${Math.random()*3}s;width:${1+Math.random()*2}px;height:${1+Math.random()*2}px`;sc.appendChild(s)}
+  const w1='Eimy, mi amor, mi vida entera...'.split(' '),w2='¿Quieres casarte conmigo?'.split(' ');
+  const c=document.getElementById('pregunta-texto');c.innerHTML='';
+  w1.forEach((w,i)=>{const s=document.createElement('span');s.className='word';s.textContent=w+' ';c.appendChild(s);setTimeout(()=>s.classList.add('visible'),800+i*400)});
+  const p=800+w1.length*400+1000;
+  const h=document.createElement('span');h.className='word pregunta-highlight';c.appendChild(h);
+  w2.forEach((w,i)=>setTimeout(()=>{h.textContent+=(i>0?' ':'')+w;h.classList.add('visible')},p+i*500));
+  setTimeout(()=>document.getElementById('pregunta-btn').classList.add('visible'),p+w2.length*500+1200);
+}
+function acceptProposal(){spawnBurst('heart-up',50,pC.width/2,pC.height/2);goTo(6)}
+
+// S6
+function startCelebracion(){initFW('fireworks-canvas');setTimeout(()=>document.getElementById('celebracion-btn').classList.add('visible'),4000)}
+
+// S7: VOTOS
+const votos=["Prometo despertar cada mañana eligiéndote a ti, en los días de sol y en los de tormenta. Porque a tu lado, hasta la lluvia se siente cálida.","Prometo ser tu refugio cuando el mundo pese demasiado, tu compañero en cada aventura loca, y tu mejor amigo en los silencios tranquilos.","Prometo llenar nuestros días de risas inesperadas, de sueños compartidos que parecen imposibles, y de un amor que crece sin parar.","Prometo cuidar tu corazón como el tesoro más valioso que la vida me ha regalado. Nunca, jamás, lo daré por sentado.","Prometo secarte las lágrimas, celebrar tus logros como si fueran míos, y recordarte cada día lo increíblemente especial que eres.","Prometo construir contigo un hogar lleno de amor, de complicidad y de esos momentos pequeños que terminan siendo los más grandes.","Prometo pelear por lo nuestro siempre, sin rendirme, sin soltar tu mano. Porque lo que tenemos vale más que todo.","Prometo amarte con cada latido, en esta vida y en todas las que vengan. Porque un solo lifetime contigo no me alcanza, Eimy."];
+function startVotos(){
+  const c=document.getElementById('votos-container');c.innerHTML='';
+  votos.forEach((v,i)=>{const d=document.createElement('div');d.className='voto-card';d.innerHTML='<div class="voto-card-ring">💍</div><div class="voto-text">"'+v+'"</div>';c.appendChild(d);setTimeout(()=>d.classList.add('visible'),400+i*600)});
+  const t=400+votos.length*600+600;
+  setTimeout(()=>document.getElementById('votos-firma').classList.add('visible'),t);
+  setTimeout(()=>document.getElementById('votos-btn').classList.add('visible'),t+800);
+}
+
+// S8: ANILLOS
+let ringsLinked=false;
+function startAnillos(){ringsLinked=false;document.getElementById('ring-nahur').classList.remove('linked');document.getElementById('ring-eimy').classList.remove('linked');document.getElementById('anillos-sub').classList.add('visible')}
+document.getElementById('anillos-display').addEventListener('click',()=>{
+  if(ringsLinked)return;ringsLinked=true;
+  document.getElementById('ring-nahur').classList.add('linked');document.getElementById('ring-eimy').classList.add('linked');
+  document.getElementById('anillos-tap').style.display='none';
+  spawnBurst('sparkle',40,pC.width/2,pC.height/2);
+  setTimeout(()=>document.getElementById('anillos-msg').classList.add('visible'),800);
+  setTimeout(()=>document.getElementById('anillos-btn').classList.add('visible'),2500);
+});
+
+// S9: ACTA
+function startActa(){
+  const now=new Date();
+  const ms=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  const ds=['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+  const dateStr=ds[now.getDay()]+' '+now.getDate()+' de '+ms[now.getMonth()]+' de '+now.getFullYear();
+  const timeStr=now.toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit'});
+  document.getElementById('acta-body').innerHTML='En la Ciudad del Amor Eterno, siendo las <strong>'+timeStr+'</strong> horas del día <strong>'+dateStr+'</strong>, ante el Universo, las estrellas y todos los sentimientos que habitan en nuestros corazones como testigos de honor, comparecen los contrayentes:<br><br>El señor <span class="acta-name">Nahur</span>, quien declara ante todo lo existente que su corazón, su alma y cada uno de sus días pertenecen libre y eternamente a la aquí presente.<br><br>Y la señorita <span class="acta-name">Eimy</span>, luz de sus ojos, dueña de sus suspiros, refugio de su alma y razón de cada uno de sus latidos.<br><br>Ambos declaran por voluntad propia, con el corazón desbordante de amor y con la certeza absoluta de que están destinados a caminar juntos por la eternidad, que desean unir sus vidas en <strong>matrimonio eterno e inquebrantable</strong>, prometiéndose amor incondicional, respeto profundo, complicidad infinita y ternura eterna por todos los días que el universo les regale.<br><br>Por lo tanto, quedan oficialmente unidos en sagrado vínculo de amor, desde este momento y <strong>para toda la eternidad</strong>. Que ninguna fuerza del universo separe lo que el amor verdadero ha unido.';
+  document.getElementById('acta-date').textContent='Registrado: '+dateStr+' — '+timeStr;
+  initAllFingerprints();initAllSignatures();
+}
+
+// FINGERPRINTS
+const fpDone={nahur:false,eimy:false};
+function initAllFingerprints(){
+  ['nahur','eimy'].forEach(who=>{
+    fpDone[who]=false;
+    const pad=document.getElementById('fp-'+who),canvas=document.getElementById('fp-canvas-'+who),ctx=canvas.getContext('2d');
+    let timer=null,pressing=false;
+    function drawFP(){
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      const cx=canvas.width/2,cy=canvas.height/2;
+      ctx.strokeStyle='rgba(120,80,50,0.35)';ctx.lineWidth=1.1;
+      for(let i=0;i<20;i++){const rx=6+i*2,ry=8+i*2.6;ctx.beginPath();ctx.save();ctx.translate(cx+(Math.random()-.5)*1.5,cy+(Math.random()-.5)*1.5);ctx.rotate((Math.random()-.5)*.08);for(let a=0;a<Math.PI*2;a+=.05){const w=Math.sin(a*(3+i%3))*(.4+Math.random()*.6),px=Math.cos(a)*(rx+w),py=Math.sin(a)*(ry+w);a===0?ctx.moveTo(px,py):ctx.lineTo(px,py)}ctx.closePath();ctx.restore();if(Math.random()>.1)ctx.stroke()}
+      for(let i=0;i<20;i++){const a=Math.random()*Math.PI*2,d=Math.random()*35;ctx.fillStyle='rgba(120,80,50,'+(0.08+Math.random()*.1)+')';ctx.beginPath();ctx.arc(cx+Math.cos(a)*d,cy+Math.sin(a)*d,.5+Math.random(),0,Math.PI*2);ctx.fill()}
+    }
+    function onDown(e){e.preventDefault();e.stopPropagation();if(fpDone[who])return;pressing=true;timer=setTimeout(()=>{if(pressing){drawFP();pad.classList.add('pressed');fpDone[who]=true;document.getElementById('fp-hint-'+who).textContent='✓ Registrada';spawnBurst('sparkle',10,pC.width/2,pC.height/2)}},700)}
+    function onUp(){pressing=false;if(timer)clearTimeout(timer)}
+    pad.onmousedown=onDown;pad.onmouseup=onUp;pad.onmouseleave=onUp;
+    pad.ontouchstart=onDown;pad.ontouchend=onUp;
+  });
+}
+
+// SIGNATURES
+const sigData={};
+function initAllSignatures(){
+  ['nahur','eimy'].forEach(who=>{
+    const canvas=document.getElementById('sig-'+who),ctx=canvas.getContext('2d');
+    const rect=canvas.getBoundingClientRect();
+    canvas.width=rect.width*2;canvas.height=rect.height*2;
+    ctx.scale(2,2);ctx.lineCap='round';ctx.lineJoin='round';ctx.strokeStyle='#1a0a05';ctx.lineWidth=1.8;
+    sigData[who]={canvas,ctx,drawing:false,last:null};
+    function gp(e){const r=canvas.getBoundingClientRect(),t=e.touches?e.touches[0]:e;return{x:t.clientX-r.left,y:t.clientY-r.top}}
+    function start(e){e.preventDefault();e.stopPropagation();const sd=sigData[who];sd.drawing=true;sd.last=gp(e);ctx.beginPath();ctx.moveTo(sd.last.x,sd.last.y)}
+    function move(e){const sd=sigData[who];if(!sd.drawing)return;e.preventDefault();e.stopPropagation();const p=gp(e),m={x:(sd.last.x+p.x)/2,y:(sd.last.y+p.y)/2};ctx.quadraticCurveTo(sd.last.x,sd.last.y,m.x,m.y);ctx.stroke();ctx.beginPath();ctx.moveTo(m.x,m.y);sd.last=p}
+    function end(){const sd=sigData[who];if(sd.drawing){ctx.stroke();sd.drawing=false;sd.last=null}}
+    canvas.onmousedown=start;canvas.onmousemove=move;canvas.onmouseup=end;canvas.onmouseleave=end;
+    canvas.addEventListener('touchstart',start,{passive:false});canvas.addEventListener('touchmove',move,{passive:false});canvas.addEventListener('touchend',end);
+  });
+}
+function clearSig(who){if(sigData[who]){const s=sigData[who];s.ctx.clearRect(0,0,s.canvas.width,s.canvas.height)}}
+
+// SELLAR
+function sellarActa(){
+  document.getElementById('acta-seal').classList.add('stamped');
+  spawnBurst('sparkle',30,pC.width/2,pC.height*.6);
+
+  // Hide seal button, show download option
+  const btns=document.getElementById('acta-btns');
+  btns.innerHTML='<button class="btn-download" onclick="downloadCertificate()" style="margin-bottom:8px">📜 Guardar Certificado como Imagen</button><br><button class="btn btn-gold" onclick="goTo(10)" style="margin-top:8px">Continuar →</button>';
+
+  // Scroll to bottom to see the sealed document
+  setTimeout(()=>{document.getElementById('acta-scroll').scrollTo({top:9999,behavior:'smooth'})},500);
+}
+
+// S10: SELLADO
+function startSellado(){
+  const now=new Date(),ms=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  document.getElementById('reg-folio').textContent=now.getDate()+'-'+(now.getMonth()+1)+'-'+now.getFullYear()+'-NE';
+  document.getElementById('reg-fecha').textContent=now.getDate()+' de '+ms[now.getMonth()]+' de '+now.getFullYear();
+  document.getElementById('reg-hora').textContent=now.toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  setTimeout(()=>{document.getElementById('sello-oficial').classList.add('visible');spawnBurst('sparkle',40,pC.width/2,pC.height*.25)},400);
+  setTimeout(()=>{document.getElementById('sello-rect').classList.add('visible');spawnBurst('sparkle',15,pC.width/2,pC.height*.4)},1200);
+  setTimeout(()=>document.getElementById('sellado-registry').classList.add('visible'),1800);
+  setTimeout(()=>document.getElementById('sellado-legal').classList.add('visible'),2500);
+  setTimeout(()=>document.getElementById('sellado-btn').classList.add('visible'),3500);
+}
+
+// S11
+function startDeclaracion(){
+  setTimeout(()=>document.getElementById('decl-badge').classList.add('visible'),300);
+  setTimeout(()=>document.getElementById('decl-title').classList.add('visible'),600);
+  setTimeout(()=>document.getElementById('decl-text').classList.add('visible'),1000);
+  setTimeout(()=>document.getElementById('decl-names').classList.add('visible'),1500);
+  setTimeout(()=>document.getElementById('decl-status').classList.add('visible'),2200);
+  setTimeout(()=>document.getElementById('decl-btn').classList.add('visible'),3200);
+}
+
+// S12: FINAL
+function startFinal(){
+  setPM('celebration');initFW('final-canvas');
+  const now=new Date(),ms=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  document.getElementById('final-date').textContent=now.getDate()+' de '+ms[now.getMonth()]+' de '+now.getFullYear();
+  setTimeout(()=>document.getElementById('final-names').classList.add('visible'),500);
+  setTimeout(()=>document.getElementById('final-siempre').classList.add('visible'),1500);
+  setTimeout(()=>document.getElementById('final-message').classList.add('visible'),2500);
+  setTimeout(()=>document.getElementById('final-date').classList.add('visible'),3500);
+  setTimeout(()=>document.getElementById('final-heart').classList.add('visible'),4000);
+  setTimeout(()=>document.getElementById('final-download').classList.add('visible'),4500);
+  setInterval(()=>spawnBurst('heart-up',3,Math.random()*pC.width,pC.height),2000);
+}
+
+// ══════════════════════════════════════
+//       DOWNLOAD CERTIFICATE
+// ══════════════════════════════════════
+async function downloadCertificate(){
+  const overlay=document.getElementById('download-overlay');
+  overlay.classList.add('active');
+
+  try{
+    // Make acta screen temporarily visible for capture
+    const actaScreen=document.getElementById('screen-acta');
+    const actaDoc=document.getElementById('acta-document');
+    const wasActive=actaScreen.classList.contains('active');
+
+    // Temporarily show it
+    if(!wasActive){
+      actaScreen.style.cssText='opacity:1;visibility:visible;z-index:-1;position:fixed;';
+    }
+
+    // Hide the buttons inside the acta for the screenshot
+    const btns=document.getElementById('acta-btns');
+    const prevDisplay=btns.style.display;
+    btns.style.display='none';
+
+    // Wait for fonts/rendering
+    await new Promise(r=>setTimeout(r,500));
+
+    const canvas=await html2canvas(actaDoc,{
+      backgroundColor:'#f5edd5',
+      scale:2,
+      useCORS:true,
+      logging:false,
+      width:actaDoc.scrollWidth,
+      height:actaDoc.scrollHeight,
+      windowWidth:actaDoc.scrollWidth,
+      windowHeight:actaDoc.scrollHeight,
+    });
+
+    // Restore
+    btns.style.display=prevDisplay;
+    if(!wasActive){
+      actaScreen.style.cssText='';
+    }
+
+    // Download
+    const link=document.createElement('a');
+    link.download='Acta_Matrimonio_Nahur_y_Eimy.png';
+    link.href=canvas.toDataURL('image/png');
+    link.click();
+  }catch(err){
+    console.error('Error generating image:',err);
+    alert('Hubo un error al generar la imagen. Puedes tomar una captura de pantalla del acta.');
+  }
+
+  overlay.classList.remove('active');
+}
+
+// ══════════════════════════════════════
+//         TOUCH SCROLL FIX
+// ══════════════════════════════════════
+document.addEventListener('touchmove',e=>{
+  const t=e.target;
+  if(t.closest('.acta-scroll')||t.closest('.card-list')||t.closest('.votos-container')||t.closest('.carta-paper')||t.closest('.sellado-container'))return;
+  if(t.closest('.signature-pad')||t.closest('.fingerprint-pad'))return;
+  e.preventDefault();
+},{passive:false});
+let lastTE=0;
+document.addEventListener('touchend',e=>{const n=Date.now();if(n-lastTE<=300)e.preventDefault();lastTE=n},false);
+</script>
+</body>
+</html>
